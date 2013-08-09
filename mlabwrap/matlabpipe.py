@@ -132,12 +132,11 @@ class MatlabPipe(object):
         self.process.stdin.write(expression)
         self.process.stdin.write('\n')
         ret = self._sync_output(on_new_output)
-        if self.matlab_version == (2013, 'a'):
-            search = 'Undefined'
-        else:
-            search = '???'
-        if identify_errors and ret.rfind(search) != -1:
-            raise MatlabError(ret)
+        if identify_errors:
+            search = ['Undefined', 'Error', '???']
+            for s in search:
+                if ret.rfind(s) != -1:
+                    raise MatlabError(ret)
         return ret
 
     def put(self, name_to_val, oned_as='row', on_new_output=None):
