@@ -3,7 +3,7 @@
 
 from setuptools import setup
 
-from mlabwrap import __version__ as version
+from mlabwrap import __version__
 
 source = 'http://pypi.python.org/packages/source'
 install_requires = ['numpy', 'scipy']
@@ -27,9 +27,9 @@ CHANGES = open('CHANGES.txt').read()
 LICENSE = open('LICENSE.txt').read()
 
 config = dict(name='mlabwrap',
-              version=version,
+              version=__version__,
               packages=['mlabwrap'],
-              test_suite='test',
+              test_suite='tests',
               use_2to3=True,
               license=LICENSE,
               long_description='%s\n\n%s' % (README, CHANGES),
