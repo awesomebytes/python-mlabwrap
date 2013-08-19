@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
 
-"""A python module for raw communication with Matlab(TM) using pipes under
-unix.  This module exposes the same interface as mlabraw.cpp, so it can be
-used along with mlabwrap.py.  The module sends commands to the MatlabTM
-process using the standard input pipe.  It loads data from/to the MatlabTM
-process using the undocumented save/load stdio commands.  Only unix (or mac
-osx) versions of MatlabTM support pipe communication, so this module will only
-work under unix (or mac osx)."""
-
 import os
 import sys
 import fcntl
 import select
 import subprocess
-from cStringIO import StringIO
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 import numpy as np
 from scipy.io import savemat, loadmat
@@ -34,11 +29,11 @@ class MatlabConnectionError(Exception):
 
 
 def find_matlab_process():
-    """"Try to get MatlabTM dir using system which command."""
+    """"Try to get MatlabTM directory using system `which` command."""
     p = subprocess.Popen(['which', 'matlab'], stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    path = p.stdout.readlines()[0].strip()
-    if 'no matlab in' in path:
+    path = list(p.stdout.readlines())[0].strip()
+    if 'no matlab in' in path.decode('utf-8'):
         return None
     else:
         return os.path.realpath(path)
@@ -49,7 +44,7 @@ def find_matlab_version(process_path):
     bin_path = os.path.dirname(process_path)
     matlab_path = os.path.dirname(bin_path)
     matlab_dir_name = os.path.basename(matlab_path)
-    version = matlab_dir_name.replace('R', '')  # Linux.
+    version = matlab_dir_name.decode('utf-8').replace('R', '')  # Linux.
     version = version.replace('MATLAB_', '').replace('.app', '')
     if not is_valid_version_code(version):
         return None
@@ -59,7 +54,7 @@ def find_matlab_version(process_path):
 def is_valid_version_code(ver):
     """Checks that the given version code is valid."""
     letters = ['h', 'g', 'f', 'e', 'd', 'c', 'b', 'a']
-    numbers = range(1990, 2050)
+    numbers = list(range(1990, 2050))
     if ver is not None and len(ver) == 5 and int(ver[:4]) in numbers and \
        ver[4] in letters:
         return True
@@ -78,6 +73,8 @@ class MatlabPipe(object):
         """MatlabTM path should be a path to the MatlabTM executable."""
         if not matlab_process_path:
             matlab_process_path = find_matlab_process()
+            if matlab_process_path is None:
+                raise IOError("Cannot find a valid matlab path")
         if not os.path.exists(matlab_process_path):
             raise ValueError('Matlab process path %s does not exist' %
                              matlab_process_path)
@@ -188,7 +185,7 @@ class MatlabPipe(object):
         temp = StringIO(temp_str)
         ret = loadmat(temp, chars_as_strings=True, squeeze_me=True)
         temp.close()
-        for key in ret.iterkeys():
+        for key in list(ret.keys()):
             # Strings are passed without any modification.
             if isinstance(ret[key], unicode) or isinstance(ret[key], str):
                 continue
@@ -199,7 +196,7 @@ class MatlabPipe(object):
                 if isinstance(ret[key], np.ndarray) and not ret[key].shape:
                     ret[key] = ret[key].tolist()
         if single_itme:
-            return ret.values()[0]
+            return list(ret.values())[0]
         return ret
 
     def _check_open(self):
@@ -219,7 +216,8 @@ class MatlabPipe(object):
                 raise MatlabConnectionError('timeout')
             new_output = self.process.stdout.read(65536)
             output_tail += new_output
-        chunk_to_take, chunk_to_keep = output_tail.split(wait_for_str, 1)
+        chunk_to_take, chunk_to_keep = \
+            output_tail.split(wait_for_str, 1)
         chunk_to_take += wait_for_str
         self.stdout_to_read = chunk_to_keep
         if on_new_output:
@@ -229,5 +227,6 @@ class MatlabPipe(object):
         return all_output.read()
 
     def _sync_output(self, on_new_output=sys.stdout.write):
-        self.process.stdin.write('disp(\'%s\');\n' % self.command_end_string)
+        string = 'disp(\'%s\');\n' % self.command_end_string
+        self.process.stdin.write(string)
         return self._read_until(self.expected_output_end, on_new_output)
