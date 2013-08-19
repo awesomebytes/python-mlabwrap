@@ -25,6 +25,7 @@ more `explicit` way:
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {.python .numberLines}
+from matlabpipe import MatlabPipe
 matlab = MatlabPipe(matlab_version='2013a')
 matlab.open()
 def t_tide(arr, fout=None):

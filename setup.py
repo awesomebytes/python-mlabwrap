@@ -3,7 +3,7 @@
 
 from setuptools import setup
 
-from mlabwrap import __version__
+from matlabpipe import __version__
 
 source = 'http://pypi.python.org/packages/source'
 install_requires = ['numpy', 'scipy']
@@ -26,9 +26,9 @@ README = open('README.md').read()
 CHANGES = open('CHANGES.txt').read()
 LICENSE = open('LICENSE.txt').read()
 
-config = dict(name='mlabwrap',
+config = dict(name='matlabpipe',
               version=__version__,
-              packages=['mlabwrap'],
+              packages=['matlabpipe'],
               test_suite='tests',
               use_2to3=True,
               license=LICENSE,
@@ -39,9 +39,9 @@ config = dict(name='mlabwrap',
               author_email='ocefpaf@gmail.com',
               maintainer='Filipe Fernandes',
               maintainer_email='ocefpaf@gmail.com',
-              url='http://pypi.python.org/pypi/mlabwrap/',
-              download_url='%s/m/mlabwrap/mlabwrap-%s.tar.gz' % (source,
-                                                                 __version__),
+              url='http://pypi.python.org/pypi/matlabpipe/',
+              download_url=('%s/m/matlabpipe/matlabpipe-%s.tar.gz' %
+                            (source, __version__)),
               platforms='any',
               keywords=['MatlabTM'],
               install_requires=install_requires)

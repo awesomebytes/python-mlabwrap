@@ -7,14 +7,14 @@
 # e-mail:   ocefpaf@gmail
 # web:      http://ocefpaf.tiddlyspot.com/
 # created:  26-Sep-2011
-# modified: Mon 19 Aug 2013 05:33:54 PM BRT
+# modified: Mon 19 Aug 2013 07:29:45 PM BRT
 #
 # obs:  Example passing data from python to MatlabTM and back to python.
 #
 
 import nose
 import unittest
-from mlabwrap import MatlabPipe
+from matlabpipe import MatlabPipe
 
 
 class TestMatlabPipe(unittest.TestCase):

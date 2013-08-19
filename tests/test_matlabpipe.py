@@ -7,7 +7,7 @@
 
 import nose
 import unittest
-from mlabwrap import MatlabPipe, MatlabError
+from matlabpipe import MatlabPipe, MatlabError
 
 
 class TestMatlabPipe(unittest.TestCase):
