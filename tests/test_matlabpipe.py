@@ -2,25 +2,22 @@
 #
 # test_matlabpipe.py
 #
-# purpose:  Test MatlabPipe.
-# author:   Filipe P. A. Fernandes
-# e-mail:   ocefpaf@gmail
-# web:      http://ocefpaf.github.io/
-# created:  08-Aug-2013
-# modified: Fri 09 Aug 2013 03:30:06 PM BRT
-#
-# obs:
-#
 
+"""This test needs an installed copy of MatlabTM."""
+
+import nose
 import unittest
 from mlabwrap import MatlabPipe, MatlabError
 
 
 class TestMatlabPipe(unittest.TestCase):
     def setUp(self):
-        self.matlab = MatlabPipe(matlab_process_path=None,
-                                 matlab_version=None)
-        self.matlab.open()
+        try:
+            self.matlab = MatlabPipe(matlab_process_path=None,
+                                     matlab_version=None)
+            self.matlab.open()
+        except IOError:
+            raise nose.SkipTest
 
     def tearDown(self):
         self.matlab.close()
