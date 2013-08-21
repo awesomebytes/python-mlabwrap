@@ -32,7 +32,10 @@ def find_matlab_process():
     """"Try to get MatlabTM directory using system `which` command."""
     p = subprocess.Popen(['which', 'matlab'], stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    path = list(p.stdout.readlines())[0].strip()
+    try:
+        path = list(p.stdout.readlines())[0].strip()
+    except IndexError:
+        return None
     if 'no matlab in' in path.decode('utf-8'):
         return None
     else:
