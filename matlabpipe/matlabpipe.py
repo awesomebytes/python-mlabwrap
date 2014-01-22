@@ -193,8 +193,11 @@ class MatlabPipe(object):
             if isinstance(ret[key], unicode) or isinstance(ret[key], str):
                 continue
             # FIXME: Try a smarter way to do this:
-            while ret[key].shape and ret[key].shape[-1] == 1:
-                ret[key] = ret[key][0]
+            try:
+                while ret[key].shape and ret[key].shape[-1] == 1:
+                    ret[key] = ret[key][0]
+            except:
+                pass
             if extract_numpy_scalars:
                 if isinstance(ret[key], np.ndarray) and not ret[key].shape:
                     ret[key] = ret[key].tolist()
