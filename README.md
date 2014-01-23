@@ -1,6 +1,11 @@
 python-mlabwrap
 ===============
 
+Personal note on use: I needed to add to my PATH variable the MATLAB binary (~/MATLAB/R2013a/bin/matlab)
+
+export PATH=~/MATLAB/R2013a/bin:$PATH
+
+
 [![Build](https://api.travis-ci.org/ocefpaf/python-mlabwrap.png?branch=master)](https://travis-ci.org/ocefpaf/python-mlabwrap)
 
 
